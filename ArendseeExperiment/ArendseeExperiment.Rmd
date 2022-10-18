@@ -21,6 +21,7 @@ library(ggplot2)
 First import all raw data. The concentrations of P, Fe and Mn in the extraction solutions, and the Dryweight data.
 ```{r import}
 concdata <- read_xlsx("20220800SequentalExtractions.xlsx")
+beforedata <- read_xlsx("20220600SequentialExtractions.xlsx")
 wtdata <- read_xlsx("20220816_AR_Dryweight.xlsx")
 ```
 ##  Data Corrections 
@@ -29,6 +30,10 @@ wtdata <- read_xlsx("20220816_AR_Dryweight.xlsx")
 ```{r }
 blanks <- filter(concdata, is.na(Depth)) %>% 
   group_by(Fraction, Parameter, Measurement) %>%
+  summarise(blank = mean(Conc), .groups = "drop") 
+
+beforeblanks <- filter(beforedata, is.na(Depth)) %>% 
+  group_by(Fraction, Parameter) %>%
   summarise(blank = mean(Conc), .groups = "drop") 
 ```
 
@@ -39,6 +44,10 @@ porosity <- data.frame(
   porosity = rep(c(pull(
     wtdata %>% group_by(Sample) %>% summarise(porosity = mean(Porosity)), porosity),0),each = 2,times = 24)
   )
+
+beforeporosity <-  pull(
+    beforedata %>% filter(Parameter == "porosity") %>% summarise(porosity = mean(Conc)), porosity)
+  
 ```
 
 Compute percentage dryweight from volume of solution and porosity
@@ -50,6 +59,21 @@ conc <- concdata %>% bind_cols(porosity) %>% left_join(blanks, by = c("Fraction"
     Fraction == "NaOH" ~ 0.075,
     T ~ 0 )) %>%  
   mutate(cont = ((Conc-blank)*volume*0.1)/(Weight*(1-porosity)))
+
+before <- beforedata %>% remove_missing() %>%  left_join(beforeblanks, by = c("Fraction","Parameter")) %>% 
+  mutate(volume = case_when(
+    Nr == "5"~ 0.150,
+    Fraction == "H2O" ~ 0.05,
+    Fraction == "Bipy" | Fraction == "BD" ~ 0.1,
+    Fraction == "NaOH" ~ 0.075,
+    T ~ 0 )) %>%  
+  mutate(cont = (((Conc*2)-blank)*volume*0.1)/(Weight*(1-beforeporosity)))
+
+beforevalues <- before %>%   
+  filter( Parameter == "TP" | Parameter == "SRP" ) %>% 
+  mutate( Fraction = paste(Fraction, Parameter) ) %>% 
+  group_by( Fraction) %>% 
+  summarise( stdev = sd(cont), cont = mean(cont) ) 
 ```
 
 ##   Analyze Bipy measurements
@@ -66,6 +90,12 @@ bipy <- filter(conc, Fraction == "Bipy" ) %>%
     )) %>% 
   group_by(Parameter,  Depth) %>% 
   summarise(stdev = sd(cont), cont = mean(cont) ) 
+
+beforebipy <- filter(before, Fraction == "Bipy") %>%  
+  filter( Parameter == "TP" | Parameter == "SRP" ) %>% 
+  mutate( Fraction = paste(Fraction, Parameter) ) %>% 
+  group_by( Fraction) %>% 
+  summarise( stdev = sd(cont), cont = mean(cont) ) 
 ```
 
 Plot of the bipy profiles, by measurement type.
@@ -73,14 +103,20 @@ Plot of the bipy profiles, by measurement type.
 ggplot( bipy, 
          mapping = aes(
            y = cont,
+           x = Depth )
+) +
+   
+  geom_line( aes(
+           y = cont,
            x = Depth ,
            color = Parameter,
-           shape = factor(Parameter))
-) +
-  geom_point(size = 2) + 
-  geom_line() +
-  geom_errorbar(aes(ymin=cont-stdev, ymax=cont+stdev), width=.2,
+           shape = factor(Parameter)))  +
+geom_point(size = 2) +
+  geom_errorbar(aes(ymin=cont-stdev, 
+                    ymax=cont+stdev,
+                    color = Parameter,), width=.2,
                 position=position_dodge(0.05))+
+  geom_point( data = beforebipy, aes( y = cont, x = 0),color="black")+
   xlab("Depth (cm)") +
   scale_x_reverse() +
   coord_flip() +
@@ -103,12 +139,15 @@ Define the P fractions: Select only the P measurements without blanks. For Bipy 
 allfrac <- conc %>% filter(Parameter == "TP" | Parameter == "SRP") %>% 
   mutate(Fraction = case_when(
     Fraction == "Bipy" && Parameter == "TP" && Measurement <= 4 ~ NA_character_,
-    Fraction == "Bipy" ~ "BipyTP",
+    Fraction == "Bipy" ~ "Bipy TP",
     T ~ paste(Fraction, Parameter)
                               )) %>%  
   remove_missing() %>% 
   group_by(Fraction,  Depth) %>% 
-  summarise(stdev = sd(cont), cont = mean(cont) ) %>% ungroup()
+  summarise(stdev = sd(cont), cont = mean(cont) ) %>% ungroup() %>% 
+  bind_rows(mutate(beforevalues, Depth = -2))
+
+
 ```
 
 Only the TP fractions.
@@ -147,7 +186,7 @@ colors <- list(c("palegreen2" ,  "tomato3", "plum3", "darkgoldenrod1", "tan3", "
 ```{r, fig.dim = c(8, 10)}
 ggplot( transform( mutfrac, 
                    Fraction = factor(Fraction, 
-                                       levels = c("H2O TP","BipyTP","BD TP","NaOH SRP","NaOH TP")
+                                       levels = c("H2O TP","Bipy TP","BD TP","NaOH SRP","NaOH TP")
                                        )), 
        aes( 
            x=Depth),
