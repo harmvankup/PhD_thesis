@@ -1,0 +1,10 @@
+bookdown::pdf_book:
+ toc: yes
+ toc_depth: 4
+ number_sections: yes
+ latex_engine: xelatex
+ template: templates/template1.tex
+ includes:
+    in_header: templates/preamble.tex
+ keep_tex: yes
+ citation_package: natbib   # or biblatex

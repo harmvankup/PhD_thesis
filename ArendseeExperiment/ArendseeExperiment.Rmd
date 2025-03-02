@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```
 
+
+# import and libraries
 ```{r packages, include=FALSE}
 library(readxl)
 library(tidyverse)
@@ -16,64 +18,233 @@ library(ggplot2)
 
 ```
 
-# Sequential Extractions
-
 First import all raw data. The concentrations of P, Fe and Mn in the extraction solutions, and the Dryweight data.
 ```{r import}
-concdata <- read_xlsx("20220800SequentalExtractions.xlsx")
-beforedata <- read_xlsx("20220600SequentialExtractions.xlsx")
-wtdata <- read_xlsx("20220816_AR_Dryweight.xlsx")
+conc_2month_raw <- read_xlsx("20220800SequentalExtractions.xlsx")
+
+conc_10month_raw <- read_xlsx("20230321_seqentialExtractions.xlsx")
+conc_10month_raw <- pivot_longer(conc_10month_raw,5:11, names_to = "Fraction", values_to = "Conc")
+
+conc_before_raw <- read_xlsx("BeforeSequentialExtractions.xlsx")
+
+
+wt_2month_raw <- read_xlsx("20220816_AR_Dryweight.xlsx")
+wt_10month_raw <- read_xlsx("20230321_AR_Dryweight.xlsx")
+
+xrd_raw <- read_xlsx("20221018_AR_XRD.xlsx")
+
+
+kwa_raw <- read_xlsx("KWA.xlsx")
+kwa_raw[str_detect(kwa_raw, "<")] <- 0
+
 ```
+
+# Total elements
+
+```{r}
+FeP <- function(Fe,P){
+  FeP <- (Fe/55.845)/(P/30.97)
+return(FeP)
+}
+FeS <- function(Fe,S){
+  FeS <- (Fe/55.845)/(S/32.06)
+return(FeS)
+}
+
+kwa <- kwa_raw %>% 
+  filter(!is.na(depth)) %>% 
+  mutate_at(5:21, ~ (.*0.05)/weight) %>% 
+  group_by(time,ID) %>% 
+  summarise_all(mean, keep = T) %>%  mutate(FeP = FeP(Fe,P),
+         FeS = FeS(Fe,S)
+         ) 
+
+kwabefore <- kwa_2month_raw %>% 
+  filter(ID == "before") %>% 
+  mutate_at(5:21, ~ (.*0.05)/weight) %>% 
+  select( c(ID, depth, Al, Ca, Fe, K, Mg, Mn, Na, P, Pb, S, Ti)) %>%  mutate(FeP = FeP(Fe,P), FeS = FeS(Fe,S)) 
+kwabefore$depth <- 30
+  
+  Scalc <- kwa %>% mutate(Smol = S/mmS,
+                          Femol = Fe/mmFe,
+                          ratepyr = ((Smol/2))/Femol )
+
+```
+
+
+```{r}
+
+
+kwalong <- select(kwa, c(time, ID, depth,FeP,FeS, Ca, Fe, P, S)) %>% 
+  pivot_longer(cols = FeP:last_col(), names_to = "Parameter", values_to = "Value") %>% 
+  transform(Parameter =  factor(Parameter, levels = (c("FeP","FeS", "Ca", "Fe", "P", "S")))) %>% 
+  filter(time == "t2")
+
+kwaplots <- ggplot(  kwalong, 
+         mapping = aes(
+           y = Value,
+           x = depth,
+          color = Parameter)
+) +
+   
+  geom_line()  +
+  geom_point(size = 2) +
+  facet_grid(cols = vars(Parameter),rows = vars(time), scales = "free") +
+  geom_point( 
+    data = transform(pivot_longer(kwabefore, cols = c(FeP,FeS, Ca, Fe, P, S), names_to = "Parameter", values_to = "Value"), Parameter = factor(Parameter, levels = c("FeP","FeS", "Ca", "Fe", "P", "S"))) , 
+    aes( y = Value, x = 30),
+    color="black")+
+
+  xlab("Depth (cm)") +
+  scale_x_reverse() +
+  coord_flip() +
+  labs(  y = expression(paste("concentration mg/g")), 
+         x = "Depth in cm",
+         title = "element profiles" ) +
+  theme_bw() +
+  theme(      aspect.ratio = 2,
+                  axis.title=element_text(size=8),
+                  plot.title = element_text(size=20, face="bold", hjust = 0.5) ,
+                  axis.text=element_text(size=8,angle = 0, hjust = 0.5),
+                  legend.title = element_text(size = 8),
+                  legend.text = element_text(size = 8),
+                  legend.key.size = unit(1.5, "cm"))
+
+show(kwaplots)
+
+ggsave( "kwaplot.png", plot = kwaplots, width = 20, height = 5)
+
+```
+
+# Sequential Extractions
+
+
+
+
 ##  Data Corrections 
 
  Filter the values of the blanks from the concentration data, and take the mean value for each measurement series.
 ```{r }
-blanks <- filter(concdata, is.na(Depth)) %>% 
+
+
+blanks_2month <- filter(conc_2month_raw, is.na(Depth)) %>% 
   group_by(Fraction, Parameter, Measurement) %>%
   summarise(blank = mean(Conc), .groups = "drop") 
 
-beforeblanks <- filter(beforedata, is.na(Depth)) %>% 
-  group_by(Fraction, Parameter) %>%
+blanks_10month <- filter(conc_10month_raw, is.na(Depth)) %>% 
+  group_by(Fraction, Measurement) %>%
+  summarise(blank = mean(Conc), .groups = "drop") 
+
+blanks_before <- filter(conc_before_raw, Nr == "blank") %>% 
+  group_by(Sample,Fraction, Parameter) %>%
   summarise(blank = mean(Conc), .groups = "drop") 
 ```
 
 
 Define porosity values for all measurements
 ```{r }
-porosity <- data.frame(
-  porosity = rep(c(pull(
-    wtdata %>% group_by(Sample) %>% summarise(porosity = mean(Porosity)), porosity),0),each = 2,times = 24)
-  )
+porosity_2month <- 
+    wt_2month_raw %>% group_by(Depth) %>% summarise(porosity = mean(Porosity))
+porosity_10month <- 
+    wt_10month_raw %>% group_by(Depth) %>% summarise(porosity = mean(Porosity))
 
-beforeporosity <-  pull(
-    beforedata %>% filter(Parameter == "porosity") %>% summarise(porosity = mean(Conc)), porosity)
+porosity_before <-  
+    conc_before_raw %>% filter(Parameter == "porosity") %>% group_by(Sample) %>% 
+      summarise(porosity = mean(Conc))
   
 ```
 
 Compute percentage dryweight from volume of solution and porosity
 ```{r }
-conc <- concdata %>% bind_cols(porosity) %>% left_join(blanks, by = c("Fraction","Parameter","Measurement")) %>% 
+
+conc_2month <- conc_2month_raw %>% 
+  left_join(porosity_2month) %>% 
+  left_join(blanks_2month, by = c("Fraction","Parameter","Measurement")) %>%  
   mutate(volume = case_when(
     Fraction == "H2O" ~ 0.05,
     Fraction == "Bipy" | Fraction == "BD" ~ 0.1,
     Fraction == "NaOH" ~ 0.075,
     T ~ 0 )) %>%  
-  mutate(cont = ((Conc-blank)*volume*0.1)/(Weight*(1-porosity)))
+  add_column(time = "2month")
 
-before <- beforedata %>% remove_missing() %>%  left_join(beforeblanks, by = c("Fraction","Parameter")) %>% 
+conc_10month <- conc_10month_raw %>% 
+  left_join(porosity_10month) %>% 
+  left_join(blanks_10month, by = c("Fraction","Measurement")) %>% 
+  separate(Fraction, c("Fraction", "Parameter")) %>% 
+   mutate(volume = case_when(
+    Fraction == "H2O" ~ 0.02,
+    Fraction == "Bipy" | Fraction == "BD" ~ 0.04,
+    Fraction == "NaOH" ~ 0.03,
+    T ~ 0 )) %>%  
+  add_column(time = "10month")
+
+conc <- 
+  full_join(conc_10month,conc_2month) %>% 
+ mutate(cont = ((Conc-blank)*volume)/(Weight*(1-porosity)),
+        Depth = Depth +3)
+
+before <- conc_before_raw %>% 
+  filter ( !is.na((Weight))) %>%  
+  left_join(blanks_before, by = c("Sample","Fraction","Parameter")) %>% 
+  left_join(porosity_before, by = "Sample") %>%
   mutate(volume = case_when(
     Nr == "5"~ 0.150,
-    Fraction == "H2O" ~ 0.05,
-    Fraction == "Bipy" | Fraction == "BD" ~ 0.1,
-    Fraction == "NaOH" ~ 0.075,
-    T ~ 0 )) %>%  
-  mutate(cont = (((Conc*2)-blank)*volume*0.1)/(Weight*(1-beforeporosity)))
+    Sample == "30-35" &  Fraction == "H2O" ~ 0.05,
+    Sample == "30-35" &  (Fraction == "Bipy" | Fraction == "BD") ~ 0.1,
+    Sample == "30-35" &  Fraction == "NaOH" ~ 0.075,
+    Sample == "Before" &  Fraction == "H2O" ~ 0.02,
+    Sample == "Before" &  (Fraction == "Bipy" | Fraction == "BD") ~ 0.04,
+    Sample == "Before" &  Fraction == "NaOH" ~ 0.03,
+    T ~ 0 ))%>%  
+  mutate(cont = (((Conc)-blank)*volume)/(Weight*(1-porosity)),
+         species = paste(Fraction, Parameter),
+         time = "before")
+  
 
 beforevalues <- before %>%   
   filter( Parameter == "TP" | Parameter == "SRP" ) %>% 
-  mutate( Fraction = paste(Fraction, Parameter) ) %>% 
-  group_by( Fraction) %>% 
-  summarise( stdev = sd(cont), cont = mean(cont) ) 
+  mutate( Fraction = paste(Fraction, Parameter)  ) %>% 
+  group_by(time, Sample, Fraction) %>% 
+  summarise( stdev = sd(cont), cont = mean(cont) )
+
+
+  add_row(Fraction = "Total", stdev = 0, cont = pull(  
+  summarise_all(group_by(kwabefore, ID), mean), "P"))
+
+before_plot <- ggplot(filter(before, Parameter == "TP" | Parameter == "SRP"), aes(x=species, y = cont, fill=Sample)) +
+  geom_boxplot(position=position_dodge(1))
+show(before_plot)
+
+```
+
+## P data analysis
+Just P
+```{r}
+
+Pdata <- filter(remove_missing(conc), (Parameter == "TP" | Parameter == "SRP") & Fraction != "BD")
+
+Pdata$Fraction <- factor(Pdata$Fraction)
+summary(lm( cont ~ Weight, data = Pdata[Pdata$Fraction == "Bipy",] ))
+
+
+weighplots <- ggplot( filter(remove_missing(conc) #, (Parameter == "TP" | Parameter == "SRP") ), 
+               ),
+         mapping = aes(
+           y = cont,
+           x = Weight,
+           color = Fraction)
+) +
+geom_point(size = 2) +
+  geom_smooth(method='lm') +
+   facet_grid(rows = vars(Parameter), scales = "free") +
+  labs(  y = expression(paste("conc(mg/gdw)")), 
+         x = "subsample weight",
+         title = "analysis " )
+show(weighplots)
+
+ggsave( "weighplot.png", plot = weighplots, width = 10, height = 20)
+
+
 ```
 
 ##   Analyze Bipy measurements
@@ -84,17 +255,24 @@ bipy <- filter(conc, Fraction == "Bipy" ) %>%
   filter( Parameter == "TP" | Parameter == "SRP" ) %>% 
   remove_missing() %>% 
   mutate(Parameter = case_when(
+    time == "10month" ~ "TP 10month",
     Parameter == "TP" & Measurement <= 4 ~ "TPnoacid",
-    Parameter == "TP" & Measurement > 4 ~ "TPacidified",
+    Parameter == "TP" & Measurement >= 9 ~ "TP block",
+    Parameter == "TP" & Measurement > 4 & Measurement < 9 ~ "TPacidified",
     T ~ "SRP"
     )) %>% 
   group_by(Parameter,  Depth) %>% 
   summarise(stdev = sd(cont), cont = mean(cont) ) 
 
+bipytot <- filter(conc, Fraction == "Bipy" ) %>%  
+  filter( (Parameter == "TP" & Measurement >4 )| Parameter == "SRP" ) %>% 
+  remove_missing() %>% 
+  group_by( Depth) %>% 
+  summarise(stdev = sd(cont), cont = mean(cont) ) 
+
 beforebipy <- filter(before, Fraction == "Bipy") %>%  
   filter( Parameter == "TP" | Parameter == "SRP" ) %>% 
-  mutate( Fraction = paste(Fraction, Parameter) ) %>% 
-  group_by( Fraction) %>% 
+  group_by(Sample, species) %>% 
   summarise( stdev = sd(cont), cont = mean(cont) ) 
 ```
 
@@ -103,24 +281,24 @@ Plot of the bipy profiles, by measurement type.
 ggplot( bipy, 
          mapping = aes(
            y = cont,
+           color = Parameter,
            x = Depth )
 ) +
    
   geom_line( aes(
            y = cont,
            x = Depth ,
-           color = Parameter,
            shape = factor(Parameter)))  +
 geom_point(size = 2) +
-  geom_errorbar(aes(ymin=cont-stdev, 
-                    ymax=cont+stdev,
-                    color = Parameter,), width=.2,
-                position=position_dodge(0.05))+
-  geom_point( data = beforebipy, aes( y = cont, x = 0),color="black")+
+  #geom_errorbar(aes(ymin=cont-stdev, 
+  #                  ymax=cont+stdev,
+   #                 color = Parameter,), width=.2,
+   #             position=position_dodge(0.05))+
+  geom_point( data = beforebipy, aes( y = cont, x = 0,color = Sample) ) +
   xlab("Depth (cm)") +
   scale_x_reverse() +
   coord_flip() +
-  labs(  y = expression(paste("concentration (percent dw)")), 
+  labs(  y = expression(paste("concentration (mg/g dw)")), 
          x = "Depth in cm",
          title = "Bipy profiles" ) +
   theme_bw() +
@@ -131,23 +309,115 @@ geom_point(size = 2) +
                    legend.text = element_text(size = 13),
                    legend.key.size = unit(1.8, "cm"))
 ```
-
+```{r }
+ggplot( bipytot, 
+         mapping = aes(
+           y = cont,
+           x = Depth )
+) +
+   
+  geom_line()  +
+geom_point(size = 2) +
+  geom_errorbar(aes(ymin=cont-stdev, 
+                    ymax=cont+stdev,
+                    color = "St Dev",), width=.2,
+                position=position_dodge(0.05))+
+  geom_point( data = beforebipy, aes( y = cont, x = 0),color="black")+
+  xlab("Depth (cm)") +
+  scale_x_reverse() +
+  coord_flip() +
+  labs(  y = expression(paste("concentration (mg/g dw)")), 
+         x = "Depth in cm",
+         title = "Bipy profiles" ) +
+  theme_bw() +
+  theme(axis.title=element_text(size=20),
+                   plot.title = element_text(size=20, face="bold", hjust = 0.5) ,
+                   axis.text=element_text(size=14,angle = 0, hjust = 0.5),
+                   legend.title = element_text(size = 16),
+                   legend.text = element_text(size = 13),
+                   legend.key.size = unit(1.8, "cm"))
+```
 ##  Plot of the P sequentiallly extracted.
 
 Define the P fractions: Select only the P measurements without blanks. For Bipy only the acidified measurements were taken.
 ```{r }
-allfrac <- conc %>% filter(Parameter == "TP" | Parameter == "SRP") %>% 
-  mutate(Fraction = case_when(
-    Fraction == "Bipy" && Parameter == "TP" && Measurement <= 4 ~ NA_character_,
+Pkwa <- select(kwa, depth, P) %>% 
+  mutate(Fraction = "Total", stdev = 0) %>% 
+  rename(Depth = depth, cont = P)
+
+allfrac <- conc %>% select(!Nr) %>% filter(Parameter == "TP" | Parameter == "SRP") %>% 
+  mutate(species = case_when(
+    time == "2month" & Fraction == "Bipy" & Parameter == "TP" & Measurement >= 5 ~ NA_character_,
     Fraction == "Bipy" ~ "Bipy TP",
     T ~ paste(Fraction, Parameter)
                               )) %>%  
   remove_missing() %>% 
-  group_by(Fraction,  Depth) %>% 
-  summarise(stdev = sd(cont), cont = mean(cont) ) %>% ungroup() %>% 
-  bind_rows(mutate(beforevalues, Depth = -2))
+  full_join(mutate(filter(select(before, !Nr), (Parameter == "TP" | Parameter == "SRP"), Sample == "Before" ), Depth = 30)) %>% 
+  group_by(species,  Depth, time) %>% 
+  summarise(stdev = sd(cont), cont = mean(cont) ) %>% ungroup()
+  
+  
+  bind_rows(Pkwa) 
 
 
+```
+```{r }
+groupfrac <- allfrac %>% 
+  group_by(time, species, depthgroup = cut(Depth,4)) %>% 
+  summarise(stdev = sd(cont), cont = mean(cont) ) %>% filter(species != "Bipy SRP" & species != "H2O SRP" & species != "NaOH SRP") %>%  ungroup()
+
+levels(groupfrac$depthgroup) <- c("-4-9 cm","10-22 cm", "23-35 cm", ">35 cm" )
+
+time.labs <- c("initial sediment","2 months", "9 months")
+names(time.labs) <- c("before","2month", "10month")
+fraction.labs <- c("H2O","Bipy","BD","NaOH")
+names(fraction.labs) <- c("H2O TP","Bipy TP","BD TP","NaOH TP")
+
+seqextrgroup  <- 
+  
+  ggplot( transform( groupfrac, 
+                   species = factor(species, 
+                                       levels = c("H2O TP","Bipy TP","BD TP","NaOH TP")
+                                       ),
+                   time = factor(time, levels = (c("before","2month", "10month"))),
+                   depthgroup = factor(depthgroup, levels = c(  ">35 cm","23-35 cm","10-22 cm","-4-9 cm" ))),  
+                  
+       aes( 
+           x = depthgroup,
+           y = cont,
+           fill = species),
+       scale_x_discrete(position = 'top' 
+                        )) +
+  geom_bar(
+    #mapping = aes( y = cont, fill = species ),
+    stat = "identity",
+    position = position_dodge())+
+   geom_errorbar(aes(ymin=cont-stdev, 
+                   ymax=cont+stdev), width=.2,
+               position=position_dodge(0.05)) +
+   scale_fill_discrete(  labels = fraction.labs) +
+ # geom_point(aes(),stat = "identity", position = position_stack(reverse=TRUE),color="black")+
+ #  geom_line( aes(),stat = "identity", position = position_stack(reverse=TRUE),color="black")+
+  coord_flip()+
+  labs(y = expression(paste("Extracted P (mg gDW"^-1,")" )),
+       x = "Depth (cm)",
+       title = "Sequential extractions",
+       fill = "Extractant"
+  ) +
+  facet_grid(cols = vars(time), rows = vars(species),
+             labeller = labeller(time = time.labs, species = fraction.labs)) +
+  theme_bw()+
+  theme(
+    title = element_text(size = 20),
+    axis.title=element_text(size=20),plot.title = element_text(hjust = 0.5),
+    axis.text=element_text(size=14,angle = 0, hjust = 0.5),
+    legend.title = element_text( size = 20),
+    legend.text = element_text(size = 15),
+    legend.key.size = unit(1.3, "cm")) 
+
+show(seqextrgroup)
+
+ggsave( "seqextrplot2.png", plot = seqextrgroup, width = 10, height = 5)
 ```
 
 Only the TP fractions.
@@ -159,49 +429,62 @@ The NRP is calculated forNaOH, by subtracting the SRP from the TP.
 ```{r }
 mutfrac <- bind_cols(
   rename(
-    filter( allfrac, Fraction == "NaOH TP" ), TP = cont),
+    filter( allfrac, species == "NaOH TP" ), TP = cont),
   select( rename(
-    filter(
-            allfrac, Fraction == "NaOH SRP" ), SRP = cont), SRP) 
+    filter( allfrac, species == "NaOH SRP" ), SRP = cont), SRP) 
   ) %>%  
-  mutate(cont = TP-SRP) %>% 
-  select(Fraction,Depth,cont, stdev) %>% 
-  bind_rows(filter(allfrac, Fraction != "NaOH TP" & Fraction != "H2O SRP")) 
+  mutate(cont = case_when( TP-SRP <= 0 ~ 0,
+                           T ~ TP-SRP
+                           ),
+         species = replace(species, species == "NaOH TP", "NaOH NRP")) %>% 
+  select(species,Depth,time,cont) %>% 
+  bind_rows(select(filter(allfrac, species != "NaOH TP" & species != "H2O SRP", species != "Bipy SRP"), !stdev)) %>% 
+  filter(time == "10month")
+
+
+  pivot_wider(names_from = Fraction, values_from = cont) 
+
+
+  mutate(Total = Total - .data[["H2O TP"]]- .data[["Bipy TP"]]- .data[["BD TP"]]- .data[["NaOH TP"]]- .data[["NaOH SRP"]]) %>% 
+  pivot_longer(2:7, names_to = "Fraction", values_to = "cont")
 ```
-## Lables and colours
+### Lables and colours
 ```{r }
-legend_labels <- c( "H2O TP; loosly adsorbed Fe",
+legend_labels <- c( "H2O TP",
                     "Bipyridine; ",
                     "BD; ",
                     "NaOH; SRP" ,
-                    "NaOH; NRP" )
+                    "NaOH; NRP" ,
+                    "Total P")
                       
-colors <- list(c("palegreen2" ,  "tomato3", "plum3", "darkgoldenrod1", "tan3", "orange","goldenrod"),
+colors <- list(c("palegreen2" ,  "tomato3", "plum3", "darkgoldenrod1", "tan3", "burlywood2","goldenrod"),
                c("orange","coral4", "darkorange2","darkgoldenrod1","goldenrod"),
                c( "palegreen2" ),
                c("orange","coral4", "darkorange2","darkgoldenrod1","goldenrod"))
 ```
 
-## plot the sequential extractions
+### plot the sequential extractions
 ```{r, fig.dim = c(8, 10)}
-ggplot( transform( mutfrac, 
-                   Fraction = factor(Fraction, 
-                                       levels = c("H2O TP","Bipy TP","BD TP","NaOH SRP","NaOH TP")
-                                       )), 
+seqextr <- ggplot( transform( mutfrac, 
+                   species = factor(species, 
+                                       levels = c("H2O TP","Bipy TP","BD TP","NaOH SRP","NaOH NRP")
+                                       ),
+                   time = factor(time, levels = (c("2month", "10month")))), 
        aes( 
            x=Depth),
        scale_x_discrete(position = 'top')) +
   geom_col(
-    mapping = aes( y = cont, fill = Fraction ),
+    mapping = aes( y = cont, fill = species ),
     stat = "identity", position = position_stack(reverse=TRUE))+
   scale_fill_manual(values = colors[[1]], labels = legend_labels, name = "Extracted Fraction") +
  # geom_point(aes(),stat = "identity", position = position_stack(reverse=TRUE),color="black")+
  #  geom_line( aes(),stat = "identity", position = position_stack(reverse=TRUE),color="black")+
   coord_flip()+
   scale_x_reverse() + 
-  labs(y = expression(paste("Extracted P (% gDW"^-1,")" )),
+  labs(y = expression(paste("Extracted P (mg gDW"^-1,")" )),
        x = "Depth (cm)"
   ) +
+  facet_grid(cols = vars(time)) +
   theme_bw()+
   theme(
     axis.title=element_text(size=20),plot.title = element_text(hjust = 0.5),
@@ -209,10 +492,172 @@ ggplot( transform( mutfrac,
     legend.title = element_text( size = 20),
     legend.text = element_text(size = 15),
     legend.key.size = unit(1.3, "cm")) 
+show(seqextr)
+
+ggsave( "seqextrplot.png", plot = seqextr, width = 10, height = 10)
 ```
-# ---- Fe/P ratio ----
 
-# ---- PW profiles ----
+## Fe/P ratio 
+
+```{r}
+Fedat <- filter(conc, Parameter == "Fe" | Parameter == "TP" ) %>%  
+  filter( Fraction == "BD" | Fraction == "Bipy" ) %>% 
+  remove_missing() %>% 
+  group_by(Fraction, Parameter,  Depth, time) %>% 
+  summarise(stdev = sd(cont), cont = mean(cont) ) 
+
+FePratio <- select(Fedat, !stdev ) %>%  
+  pivot_wider( names_from = Parameter, values_from = cont) %>% 
+  mutate(FeP = (Fe/55.845)/(TP/30.97))
+
+```
 
 
+```{r }
+ggplot( Fedat, 
+         mapping = aes(
+           y = cont,
+           x = Depth,
+          color = time)
+) +
+   
+  geom_line()  +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin=cont-stdev, 
+                    ymax=cont+stdev,
+                   ), width=.2,
+                position=position_dodge(0.05))+
+  facet_grid(cols = vars(Fraction), rows = vars(Parameter) )  +
+  #geom_point( data = beforebipy, aes( y = cont, x = 0),color="black")+
+
+  xlab("Depth (cm)") +
+  scale_x_reverse() +
+  coord_flip() +
+  labs(  y = expression(paste("concentration (percent dw)")), 
+         x = "Depth in cm",
+         title = "Fe profiles" ) +
+  theme_bw() +
+  theme(axis.title=element_text(size=20),
+                   plot.title = element_text(size=20, face="bold", hjust = 0.5) ,
+                   axis.text=element_text(size=14,angle = 0, hjust = 0.5),
+                   legend.title = element_text(size = 16),
+                   legend.text = element_text(size = 13),
+                   legend.key.size = unit(1.8, "cm"))
+```
+```{r }
+ggplot( FePratio, 
+         mapping = aes(
+           y = FeP,
+           x = Depth,
+          color = time)
+) +
+   
+  geom_line()  +
+  geom_point(size = 2) +
+  facet_grid(cols = vars(Fraction), scales = "free") +
+  #geom_point( data = beforebipy, aes( y = cont, x = 0),color="black")+
+
+  xlab("Depth (cm)") +
+  scale_x_reverse() +
+  coord_flip() +
+  labs(  y = expression(paste("Fe/P")), 
+         x = "Depth in cm",
+         title = "Fe profiles" ) +
+  theme_bw() +
+  theme(axis.title=element_text(size=20),
+                   plot.title = element_text(size=20, face="bold", hjust = 0.5) ,
+                   axis.text=element_text(size=14,angle = 0, hjust = 0.5),
+                   legend.title = element_text(size = 16),
+                   legend.text = element_text(size = 13),
+                   legend.key.size = unit(1.8, "cm"))
+```
+
+# XRD
+
+```{r }
+xrd <- xrd_raw %>% select(Depth,Nr, "2 month", "10 month") %>% 
+  mutate(Depth = Depth +3) %>% 
+  pivot_longer(cols = !Depth & !Nr, names_to = "time", values_to = "area")
+
+xrdplot <- ggplot( xrd, 
+         mapping = aes(
+           y = area,
+           x = Depth,
+          color = time)
+) +
+   
+  geom_line()  +
+  geom_point(size = 2) +
+  scale_color_discrete(labels = c("9 months", "2 months")) +
+  #facet_grid(cols = vars(time), scales = "free") +
+  #geom_point( data = beforebipy, aes( y = cont, x = 0),color="black")+
+
+  xlab("Depth (cm)") +
+  scale_x_reverse() +
+  coord_flip() +
+  labs(  y = expression(paste("2",theta,"/abs")), 
+         x = "Depth in cm",
+         title = "XRD vivianite relative peak area" ) +
+  theme_bw() +
+  theme(axis.title=element_text(size=20),
+                   plot.title = element_text(size=20, face="bold", hjust = 0.5) ,
+                   axis.text=element_text(size=14,angle = 0, hjust = 0.5),
+                   legend.title = element_text(size = 16),
+                   legend.text = element_text(size = 13),
+                   legend.key.size = unit(1.8, "cm"))
+show(xrdplot)
+
+ggsave( "XRDplot.png", plot = xrdplot, width = 10, height = 5)
+
+```
+
+# PW profiles 
+
+```{r }
+
+pwdata <- read_xlsx("2022_Harm_Peeper_Arendsee.xlsx", skip = 2 , col_names = TRUE)
+pwdata[str_detect(pwdata, "<")] <- 0
+pwdata$ID <- pwdata$ID - 10
+pwdata <- pwdata %>% select(where(is.numeric)) %>% select(!starts_with("NO") & !Zn) %>% mutate(SRP = SRP/1000, HS = HS/1000)
+
+pwlong <- select(pwdata, c(ID,  Fe,Mn, P,  HS)) %>% pivot_longer(cols = 2:last_col(), names_to = "Parameter", values_to = "Value")
+
+```
+
+```{r, fig.dim = c(50, 10)}
+pwplots <- ggplot( transform( pwlong, 
+                   Parameter = factor(Parameter, 
+                                       levels = c("P","Fe","Mn","SO42-","HS")
+                                       )), 
+         mapping = aes(
+           y = Value,
+           x = ID,
+          color = Parameter)
+) +
+   
+  geom_line()  +
+  geom_point(size = 2) +
+  facet_grid(cols = vars(Parameter), scales = "free") +
+  #geom_point( data = beforebipy, aes( y = cont, x = 0),color="black")+
+
+  xlab("Depth (cm)") +
+  scale_x_reverse() +
+  coord_flip() +
+  labs(  y = expression(paste("concentration mg/L")), 
+         x = "Depth in cm",
+         title = "pw profiles" ) +
+  theme_bw() +
+  theme(      aspect.ratio = 2,
+                  axis.title=element_text(size=15),
+                  plot.title = element_text(size=20, face="bold", hjust = 0.5) ,
+                  axis.text=element_text(size=12,angle = 0, hjust = 0.5),
+                  strip.text = element_text(size = 13),
+                  legend.title = element_text(size = 15),
+                  legend.text = element_text(size = 12),
+                  legend.key.size = unit(1.5, "cm"))
+
+show(pwplots)
+
+ggsave( "pwplot2.png", plot = pwplots, width = 10, height = 5)
+```
 

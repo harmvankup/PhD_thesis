@@ -1,0 +1,7 @@
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(lemon)
+library(knitr)
+library(broom)
+library(lsmeans)

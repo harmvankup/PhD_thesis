@@ -1,0 +1,102 @@
+---
+bibliography: [bib/thesis.bib]
+title: 'Impacts of Sulfate Reduction on Phosphorus Cycling: Stability of Vivianite in Lake Sediments'
+author: 'Harm Noël van Kuppevelt'
+date: 'May 2025'
+institution: 'der Brandenburgischen Technischen Universität Cottbus-Senftenberg'
+division: 'Von der Fakultät für Umwelt und Naturwissenschaften'
+advisor: 'M Hupfer'
+startquote: |
+  `r if(knitr:::is_latex_output()) paste(readLines(here::here( "prelims", "00-quote.Rmd")), collapse = "\n  ")`
+#altadvisor: 'Your Other Advisor'
+department: 'Leibniz-Institut für Gewässerökologie und Binnenfischerei'
+degree: 'Doktors der Naturwissenschaften (Dr. rer. nat.)'
+site: bookdown::bookdown_site
+# The next two lines allow you to change the spacing in your thesis. You can 
+# switch out \onehalfspacing with \singlespacing or \doublespacing, if desired.
+documentclass: book
+header-includes:
+    - \usepackage{setspace}
+    - \onehalfspacing
+#    - \usepackage{natbib}
+# This will automatically install the {remotes} package and {thesisdown}
+# Change this to FALSE if you'd like to install them manually on your own.
+params:
+  'Install needed packages for {thesisdown}': FALSE
+# Remove the hashtag to specify which version of output you would like.
+# Can only choose one at a time.
+ # or another style file, if used
+# If you are creating a PDF you'll need to write your preliminary content 
+# (e.g., abstract, acknowledgements) below or use code similar to line 25-26 
+# for the .RMD files. If you are NOT producing a PDF, delete or silence
+# lines 25-39 in this YAML header.
+summary: |
+  `r if(knitr:::is_latex_output()) paste(readLines(here::here( "prelims", "00-abstract.Rmd")), collapse = "\n  ")`
+# If you'd rather include the preliminary content in files instead of inline
+# like below, use a command like that for the abstract above.  Note that a tab 
+# is needed on the line after the `|`.
+
+zusammenfassung: |
+  `r if(knitr:::is_latex_output()) paste(readLines(here::here( "prelims", "00-Zusammenfassung.Rmd")), collapse = "\n  ")`
+
+# Download your specific csl file and refer to it in the line below.
+#csl: csl/apa.csl
+lot: true
+lof: true
+link-citations: true
+---
+
+```{r include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  'bib2.bib'
+), 'bib1.bib')
+```
+<!--
+Above is the YAML (YAML Ain't Markup Language) header that includes a lot of 
+metadata used to produce the document.  Be careful with spacing in this header!
+
+If you'd prefer to not include a Dedication, for example, simply delete the section entirely, or silence them (add # before each line). 
+
+If you have other LaTeX packages you would like to include, delete the # before header-includes and list the packages after hyphens on new lines.
+
+If you'd like to include a comment that won't be produced in your resulting file enclose it in a block like this.
+
+If you receive a duplicate label error after knitting, make sure to delete the index.Rmd file and then knit again.
+-->
+
+```{r include_packages, include=FALSE}
+# This chunk ensures that the thesisdown package is
+# installed and loaded. This thesisdown package includes
+# the template files for the thesis.
+if(!require(remotes)) {
+  if (params$`Install needed packages for {thesisdown}`) {
+    install.packages("remotes", repos = "https://cran.rstudio.com")
+  } else {stop(paste('You need to run install.packages("remotes")","first in the Console.'))}}
+if(!require(thesisdown)) {if (params$`Install needed packages for {thesisdown}`) {
+    remotes::install_github("ismayc/thesisdown")} else {stop(paste("You need to run",'remotes::install_github("ismayc/thesisdown")', "first in the Console."))}}
+library(thesisdown)
+source("scripts/packages.R")
+source("scripts/general.R")
+#Set how wide the R output will go
+options(width = 70)
+```
+
+<!--
+The acknowledgments, preface, dedication, and abstract are added into the PDF
+version automatically by inputting them in the YAML at the top of this file.
+Alternatively, you can put that content in files like 00--prelim.Rmd and
+00-abstract.Rmd like done below.
+-->
+
+```{r eval=!knitr::is_latex_output(), child=here::here( "prelims", "00--prelim.Rmd")}
+
+```
+
+```{r eval=!knitr::is_latex_output(), child=here::here("prelims", "00-abstract.Rmd")}
+
+```
+
+<!-- The {.unnumbered} option here means that the introduction will be 
+"Chapter 0." You can also use {-} for no numbers on chapters.
+-->

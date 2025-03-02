@@ -1,0 +1,241 @@
+% ========================================
+% template.tex
+% A single-file template that merges "reedthesis"-style macros
+% into a standard book-based template for use with bookdown.
+% ========================================
+\documentclass[12pt,twoside]{book}
+
+% ------------------------------------------------
+% PACKAGES
+% ------------------------------------------------
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lmodern}
+\usepackage{float}
+\usepackage{rotating}
+\usepackage{fancyvrb} % for nicer verbatim
+\usepackage{natbib}
+$if(fontenc)$
+  \usepackage[$fontenc$]{fontenc}
+$endif$
+$if(inputenc)$
+  \usepackage[utf8]{inputenc}
+$endif$
+
+% For cross-referencing sections with auto-labeled references
+$if(xelatex)$
+  \usepackage{fontspec}
+$endif$
+$if(luatex)$
+  \usepackage{fontspec}
+$endif$
+
+% --- Page geometry / margins (if not using geometry in YAML) ---
+$if(geometry)$
+  \usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$else$
+  \usepackage[margin=1in]{geometry}
+$endif$
+
+% ------------------------------------------------
+% THESIS/DISSERTATION-SPECIFIC MACROS
+% ------------------------------------------------
+\makeatletter
+\newcommand{\degree}[1]{\def\@degree{#1}}
+\newcommand{\institution}[1]{\def\@institution{#1}}
+\newcommand{\division}[1]{\def\@division{#1}}
+\newcommand{\department}[1]{\def\@department{#1}}
+\newcommand{\advisor}[1]{\def\@advisor{#1}}
+\newcommand{\altadvisor}[1]{\def\@altadvisor{#1} \@altadvisortrue}
+\newcommand{\startquote}[1]{\def\@startquote{#1}}
+
+
+% Defaults if user doesn't provide them via YAML
+\def\@degree{PhD}
+\def\@institution{My University}
+\def\@division{Science Division}
+\def\@department{Department Name}
+\def\@advisor{Advisor Name}
+\def\@altadvisor{}
+\def\@startquote{}
+
+% Pandoc will pass these from YAML front matter if present
+$if(degree)$
+  \degree{$degree$}
+$endif$
+$if(institution)$
+  \institution{$institution$}
+$endif$
+$if(division)$
+  \division{$division$}
+$endif$
+$if(advisor)$
+  \advisor{$advisor$}
+$endif$
+$if(altadvisor)$
+  \altadvisor{$altadvisor$}
+$endif$
+$if(department)$
+  \department{$department$}
+$endif$
+$if(startquote)$
+  \startquote{$startquote$}
+$endif$
+
+% Title, author, date from YAML
+$if(title)$
+  \title{$title$}
+$else$
+  \title{Untitled}
+$endif$
+
+$if(author)$
+  \author{$author$}
+$else$
+  \author{}
+$endif$
+
+$if(date)$
+  \date{$date$}
+$else$
+  \date{\today}
+$endif$
+
+% ------------------------------------------------
+% HEADERS/FOOTERS
+% ------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{\slshape \nouppercase \rightmark}
+\fancyhead[RE]{\slshape \nouppercase \leftmark}
+
+% ------------------------------------------------
+% FRONTMATTER / ENVIRONMENTS
+% ------------------------------------------------
+\newenvironment{preface}{
+  \chapter*{Preface}
+  \addcontentsline{toc}{chapter}{Preface}
+}{\clearpage}
+
+\newenvironment{acknowledgements}{
+  \chapter*{Acknowledgements}
+  \addcontentsline{toc}{chapter}{Acknowledgements}
+}{\clearpage}
+
+\newenvironment{summary}{
+  \chapter*{Summary}
+  \addcontentsline{toc}{chapter}{Summary}
+}{\clearpage}
+
+\newenvironment{zusammenfassung}{
+  \chapter*{Zusammenfassung}
+  \addcontentsline{toc}{chapter}{Zusammenfassung}
+}{\clearpage}
+
+% ------------------------------------------------
+% BEGIN DOCUMENT
+% ------------------------------------------------
+\begin{document}
+
+% -----------------------------------------------
+% CUSTOM TITLE PAGE (Mimicking "reedthesis" style)
+% -----------------------------------------------
+$if(title)$
+  \thispagestyle{empty}
+  \begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    {\Large \textbf{\@title}\par}
+    \vspace{1cm}
+    {\large \@division \\
+    \@institution \\
+    (for the degree of \@degree)}
+    \vspace{2cm}
+    {\large \@author \\
+    \@department\par}
+    \vspace{1.5cm}
+    Advisor: \@advisor \\
+    $if(altadvisor)$
+      Co-Advisor: \@altadvisor
+    $endif$
+    \vfill
+    {\large \@date}
+  \end{titlepage}
+  \cleardoublepage
+$endif$
+
+% If a "quote" was provided, show it on a separate page
+$if(startquote)$
+
+  \thispagestyle{empty}
+  \begin{flushright}
+    \vspace*{4cm}
+    \emph{\@startquote}
+  \end{flushright}
+  \cleardoublepage
+
+$endif$
+  \makeatother
+% Use frontmatter to get roman-numbered pages here
+\frontmatter
+\pagestyle{empty}
+
+% If you want an optional "preface" environment:
+$if(preface)$
+  \begin{preface}
+  $preface$
+  \end{preface}
+$endif$
+
+$if(acknowledgements)$
+  \begin{acknowledgements}
+  $acknowledgements$
+  \end{acknowledgements}
+$endif$
+
+$if(toc)$
+  \setcounter{tocdepth}{$toc-depth$}
+  \tableofcontents
+  \clearpage
+$endif$
+
+$if(summary)$
+  \begin{summary}
+  $summary$
+  \end{summary}
+$endif$
+
+$if(zusammenfassung)$
+  \begin{zusammenfassung}
+  $zusammenfassung$
+  \end{zusammenfassung}
+$endif$
+
+% Start mainmatter for normal arabic page numbering
+\mainmatter
+\pagestyle{fancy}
+
+% -----------------------------------------------
+% HERE IS THE BOOK CONTENT INJECTED BY bookdown
+% -----------------------------------------------
+$body$
+
+% -----------------------------------------------
+% OPTIONAL LISTS OF FIGURES/TABLES
+% -----------------------------------------------
+$if(lof)$
+  \listoffigures
+  \clearpage
+$endif$
+
+$if(lot)$
+  \listoftables
+  \clearpage
+$endif$
+
+\end{document}

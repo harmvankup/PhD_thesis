@@ -1,0 +1,116 @@
+# PhD_thesis
+All R code related to my doctoral research.
+\addbibresource[location=remote]{http://127.0.0.1:23119/better-bibtex/export/library?/1/library.biblatex}
+# References
+---
+title: "Romeo and Juliet"
+---
+title: "Romeo and Juliet"
+tinytex::install_tinytex()
+unlink("test_cache", recursive = TRUE)
+getwd
+if (!require("remotes"))
+install.packages("remotes", repos = "https://cran.rstudio.org")
+remotes::install_github("rstudio/bookdown")
+remotes::install_github("ismayc/thesisdown")
+install.packages(c('tinytex', 'rmarkdown'))
+tinytex::install_tinytex()
+unlink("test_cache", recursive = TRUE)
+install.packages("remotes", repos = "https://cran.rstudio.org")
+remotes::install_github("rstudio/bookdown")
+remotes::install_github("ismayc/thesisdown")
+remotes::install_github("rstudio/bookdown")
+install.packages("thesisdown")
+install.packages("bookdown")
+install.packages("bookdown")
+remotes::install_github('rstudio/bookdown')
+install.packages("xfun")
+install.packages("xfun")
+remotes::install_github('rstudio/bookdown')
+install.packages("xfun")
+install.packages(c("askpass", "backports", "bit", "bit64", "blob", "broom", "cachem", "callr", "cli", "colorspace", "cpp11", "crayon", "curl", "data.table", "DBI", "dbplyr", "digest", "dtplyr", "emmeans", "farver", "fastmap", "forcats", "fs", "gargle", "glue", "googledrive", "googlesheets4", "haven", "hms", "httr", "jsonlite", "knitr", "lubridate", "modelr", "mvtnorm", "openssl", "prettyunits", "processx", "progress", "ps", "purrr", "Rcpp", "readr", "readxl", "rematch", "reprex", "rlang", "rmarkdown", "rstudioapi", "rvest", "stringi", "stringr", "sys", "tidyr", "tidyverse", "tzdb", "uuid", "vroom", "xfun", "xml2", "yaml"))
+install.packages(c("askpass", "backports", "bit", "bit64", "blob", "broom", "cachem", "callr", "cli", "colorspace", "cpp11", "crayon", "curl", "data.table", "DBI", "dbplyr", "digest", "dtplyr", "emmeans", "farver", "fastmap", "forcats", "fs", "gargle", "glue", "googledrive", "googlesheets4", "haven", "hms", "httr", "jsonlite", "knitr", "lubridate", "modelr", "mvtnorm", "openssl", "prettyunits", "processx", "progress", "ps", "purrr", "Rcpp", "readr", "readxl", "rematch", "reprex", "rlang", "rmarkdown", "rstudioapi", "rvest", "stringi", "stringr", "sys", "tidyr", "tidyverse", "tzdb", "uuid", "vroom", "xfun", "xml2", "yaml"))
+install.packages("xfun")
+remotes::install_github('rstudio/bookdown')
+library(xfun)
+pkgbuild::has_build_tools(debug = TRUE)
+install.packages("Rtools")
+pkgbuild::has_build_tools(debug = TRUE)
+install.packages("pkgbuild")
+pkgbuild::has_build_tools(debug = TRUE)
+install.packages("xfun", type = "source")
+remotes::install_github('rstudio/bookdown')
+remotes::install_github("ismayc/thesisdown")
+library(bookdown)
+library(knitr)
+library(rmarkdown)
+here::here
+root
+file.path()
+wd
+is.wd()
+ath.expand("~/")
+# flights.csv is in the data directory
+path.expand("~/")
+getwd()
+remotes::install_github("ismayc/thesisdown")
+remotes::install_github("ismayc/thesisdown", force = TRUE)
+library(thesisdown)
+# This chunk ensures that the thesisdown package is
+# installed and loaded. This thesisdown package includes
+# the template files for the thesis.
+#if(!require(remotes)) {
+# if (params$`Install needed packages for {thesisdown}`) {
+#  install.packages("remotes", repos = "https://cran.rstudio.com")
+#} else {stop(paste('You need to run install.packages("remotes")","first in the Console.'))}}
+#if(!require(thesisdown)) {if (params$`Install needed packages for {thesisdown}`) {
+# remotes::install_github("ismayc/thesisdown")} else {stop(paste("You need to run",'remotes::install_github("ismayc/thesisdown")', "first in the Console."))}}
+#library(thesisdown)
+# Set how wide the R output will go
+#options(width = 70)
+View(params)
+# This chunk ensures that the thesisdown package is
+# installed and loaded. This thesisdown package includes
+# the template files for the thesis.
+#if(!require(remotes)) {
+# if (params$`Install needed packages for {thesisdown}`) {
+#  install.packages("remotes", repos = "https://cran.rstudio.com")
+#} else {stop(paste('You need to run install.packages("remotes")","first in the Console.'))}}
+#if(!require(thesisdown)) {if (params$`Install needed packages for {thesisdown}`) {
+# remotes::install_github("ismayc/thesisdown")} else {stop(paste("You need to run",'remotes::install_github("ismayc/thesisdown")', "first in the Console."))}}
+#library(thesisdown)
+# Set how wide the R output will go
+#options(width = 70)
+View(params)
+# This chunk ensures that the thesisdown package is
+# installed and loaded. This thesisdown package includes
+# the template files for the thesis.
+if(!require(remotes)) {
+if (params$`Install needed packages for {thesisdown}`) {
+install.packages("remotes", repos = "https://cran.rstudio.com")
+} else {stop(paste('You need to run install.packages("remotes")","first in the Console.'))}}
+if(!require(thesisdown)) {if (params$`Install needed packages for {thesisdown}`) {
+remotes::install_github("ismayc/thesisdown")} else {stop(paste("You need to run",'remotes::install_github("ismayc/thesisdown")', "first in the Console."))}}
+library(thesisdown)
+#Set how wide the R output will go
+options(width = 70)
+detach("package:remotes", unload = TRUE)
+library(remotes)
+---
+title: 'My Final College Paper'
+install.packages("xfun")
+if (!require("remotes"))
+install.packages("remotes", repos = "https://cran.rstudio.org")
+if (!require("remotes"))
+install.packages("remotes", repos = "https://cran.rstudio.org")
+remotes::install_github('rstudio/bookdown')
+remotes::install_github("ismayc/thesisdown")
+install.packages(c('tinytex', 'rmarkdown'))
+tinytex::install_tinytex()
+git lfs install
+file.edit("~/.Rprofile")
+Sys.setenv(RSTUDIO_PANDOC = "C:\\Users\\harmv\\Nextcloud\\Documents\\ProjectsRepositories\\PhD_thesis\\pandoc-3.4-windows-x86_64\\pandoc-3.4\\pandoc")
+Sys.setenv(RSTUDIO_PANDOC = "C:\\Users\\harmv\\Nextcloud\\Documents\\ProjectsRepositories\\PhD_thesis\\pandoc-3.4-windows-x86_64\\pandoc-3.4\\pandoc.exe")
+file.edit("~/.Rprofile")
+file.remove("~/.Rprofile")
+file.edit("~/.Rprofile")

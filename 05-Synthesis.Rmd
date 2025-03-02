@@ -1,0 +1,53 @@
+
+# Synthesis
+This thesis provides novel insights into the formation, composition, and stability of vivianite in intertidal
+sediments. This chapter will begin with a summary of the key findings and their potential implications for the
+role of vivianite in phosphorus (P) cycling in coastal sediments. The discussion will then extend to how the
+presented findings may apply to various environmental systems and be relevant to other research fields. An
+examination will follow, discussing how the developed methodology for in-situ studies in this thesis widens
+our geochemical toolbox and opens various avenues to study in-situ Fe mineral transformation processes.
+Additionally, this chapter suggests possible directions for future research.
+
+## Summary and discussion
+
+### Vivianite stability under sulfidic conditions
+
+
+The influence of sulphate reduction on phosphorus (P) mobilization i a process found in all aquatic systems, and has been observed in both marine and freshwater systems. Indeed, also in rivers this has been observed [@Zak2006]. There are a few key  differences why the effect is different in lakes compared to rivers. In lakes, redox stratification often lead to more pronounced sulphate reduction. Secondly, the water residence time is much lower in rivers, and therefore inflow is relatively more important than sediment effects. However, for the same reason an increase of sulfate can be much larger in rivers [@Kommana2023].
+As for data on the proportion of phosphorus associated with higher sulphate levels in lakes and rivers, it is important to make a difference between the short and long term. There are many studies that have examined this relationship in the short term in specific systems [e.g. @Roden1997; @Chen2016; @Zhao2021] . However, as far as I’m aware there is no recent review study. The importance of sulfur on the long term P retention is much more difficult to quantify, although there is some modelling evidence [@Katsev2006] suggesting it may play a major role.
+
+
+
+### Methodological considerations
+Bipyridine extraction.
+Sediment peeper.
+Mössbauer, Xanes
+Synthetic vs natural vivianite.
+
+## Conclusions and outlook
+
+### Implications for freshwater management
+
+Diagnostics.
+Fe treatment.
+Sulfate management.
+Dredging.
+
+### Relevance to other fields
+The RecaP project aims to look in a transdisciplinary fashion at the P challenge, in order to come to a holistic transformation towards sustainable P use. It is therefore crucial to place the implications of this study in a broader context.
+
+#### further up the P value chain
+Stakeholder engagement. Farmer and industry responsibility sulfur mitigation. Reuse of vivianite P from lakes. Lake health as indicator for P recycling success.
+
+#### Climate change and biodiversity loss
+Lakes as biodiversity hotspots and widespread effects of eutrophication
+
+#### Paleosedimentology and diagenesis
+It is interesting to put the relative fluxes of P from antropogenic sources to the geological cycle.
+Post- depositional alteration of sediment record [@Dijkstra2018] Apatite as main P mineral in geoleogical cycle[@Zhao2024]
+
+### Future research
+Mössbauer.
+Find case study where legacy vivianite P is mobilized.
+Investigate the potential of sulfate management for P control.
+Develop robust model for predicting Fe treatment efficacy.

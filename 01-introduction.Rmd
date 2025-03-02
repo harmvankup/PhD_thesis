@@ -1,0 +1,109 @@
+<!--
+This is for including Chapter 1.  Notice that it's also good practice to name your chunk.  This will help you debug potential issues as you knit.  The chunk above is called intro and the one below is called chapter1.  Feel free to change the name of the Rmd file as you wish, but don't forget to change it here from chap1.Rmd.
+-->
+
+<!--
+The {#rmd-basics} text after the chapter declaration will allow us to link throughout the document back to the beginning of Chapter 1.  These labels will automatically be generated (if not specified) by changing the spaces to hyphens and capital letters to lowercase.  Look for the reference to this label at the beginning of Chapter 2.
+-->
+# Introduction {#Intro}
+Per Morgen- SEM-EDS
+SDU lab technicians
+Aarhus people
+
+## The Phosphorus problem
+The emergence of humans on earth was followed by unprecedented changes in the Earths environment and disruption of the vital biogeochemical cycles underpinning the regenerative nature that characterized the climatologically stable Holocene epoch.  As a species that can recognize the importance of live and its essential building blocks, we bear the responsibility of a fair and sustainable distribution of the earths resources. Unfortunately, externalizing impacts in favor of short-term profit has become humanities predominant mode of operation. The limits of regeneration are increasingly crossed, as described by the planetary boundary framework ([@Richardson2023]). One of the transgressed boundaries is that of Phosphorus (P). The geological P cycle, P weathering from rocks flow in the ocean where it precipitates again, is a slow process, and many ecosystems are P limited. As an essential building block of life, P is recycled efficiently in natural ecosystems. Since the green revolution, agriculture is increasingly dependent on the use of fertilizer derived from phosphate rock [@Ashley2011]. This has broken the P cycle, instead forming a linear process with major implications at both ends of the chain [@Cordell2010]. On one end, food production has become dependent on a finite reservoir of phosphate rock, while accumulation of P in freshwater ecosystems causes wide spread ecological damage at the other end (Fig. \@ref(fig:pcycle)). Harmful algae blooms through eutrophication threaten water quality and many related ecosystem services [@Ansari2014]. Closing the P cycle requires not just the reuse of P in agriculture, but also the restoration of lake ecosystems.
+
+```{r pcycle,echo=FALSE, fig.cap="Top: geological P cycle. Bottom: Unstustainable P use. A finite resource of phosphate rock is used in agriculture and ends up in aquatic ecosystems, where it causes ecological damage.", out.width="1\\linewidth", fig.align="center"}
+knitr::include_graphics("figure/pcyclelinear.png")
+```
+
+## Phosphorus cycling in freshwater sediments
+Talk about all the different forms P enters the sediment, and the early diagenesis.
+
+The retention of P in sediments occurs through its binding to the solid phase via biological and chemical precipitation [@Boers1998; @OConnell2020; @Parsons2017]. Burial P pools accumulate in sediment following years of nutrient enrichment. The speciation of sediment P is highly dependent on lake conditions and undergoes significant changes during early diagenesis, where remobilisation of labile forms of P occurs, whereas only the stable forms of solid-bound P are buried long-term (Boers et al., 1998; Emerson, 1976). Initially, the sedimentation of P incorporated into organic matter (OM) by primary producers is an important influx of P to lake sediments, especially in eutrophic lakes. However, the long-term burial of OM-bound P is constrained by remineralisation processes in the sediment (Boers et al., 1998). Secondly, P can adsorb to iron (Fe) hydroxides [@Gunnars2002] and bind to OM to form organic Fe-P complexes (Fe(III)-OM-P) (Schwertmann and Murad, 1988). The precipitation of these ferric iron-bound P forms (Fe(III)-P) can be a major internal sink of P in lakes with naturally high Fe content (Hupfer and Lewandowski, 2008; Reitzel et al., 2005) or those artificially treated with Fe (Kleeberg et al., 2012; Münch et al., 2024). Under the reducing conditions induced by organic matter decomposition in the sediment, Fe(III) is reduced to Fe(II), leading to the release of bound P and preventing the long-term burial of Fe(III)-bound P. However, P can be sequestered long-term in the form of the Fe(II) mineral vivianite (Fe(II)3(PO4)2·8H2O) (Rothe et al., 2016), which has been identified as a major form of burial P in eutrophic, high-Fe, and nonsulphidic freshwater systems (Dijkstra et al., 2018; Kubeneck et al., 2021; O’Connell et al., 2015; Rothe, 2016).
+
+## Sulfur biogeochemistry
+
+Basically summarize @Zak2021.
+
+– This analysis revealed three main clusters of research: one focused on biogeochemical processes in wetlands and lakes (emphasizing carbon, nitrogen, and methane dynamics), another on the ecotoxicological effects of sulfate (with emphasis on eutrophication and toxicity in various species), and a third on bioremediation approaches to mitigate sulfate pollution.
+
+3. Impact on Biogeochemical Cycles
+• Carbon Cycle:
+– Elevated sulfate levels can alter primary production, organic matter decomposition, and the overall balance between methane (CH₄) and carbon dioxide (CO₂) production.
+– Under anaerobic conditions, sulfate-reducing bacteria (SRB) become energetically favored over methanogens, shifting the electron flow from methanogenesis (which produces CH₄) to sulfate reduction (producing CO₂).
+– This transition can result in a diversion of carbon flow, potentially enhancing overall carbon mineralization rates and influencing greenhouse gas emissions.
+
+• Phosphorus Cycle:
+– Sulfate reduction in sediments can lead to the production of sulfide, which in turn affects iron chemistry.
+– The reduction of Fe(III) compounds and subsequent precipitation of iron sulfides can liberate phosphate from sediments, thereby increasing its availability in the water column—a process sometimes referred to as “internal eutrophication.”
+– This mechanism is especially critical in systems with high iron-bound phosphorus, where changes in the Fe:PO₄³⁻ ratio can trigger a net release of phosphorus into the water.
+
+4. Ecotoxicological Effects and Human Health Implications
+• Toxicity to Aquatic Organisms:
+– Although sulfate itself is often considered one of the less toxic major ions, its presence can induce osmotic stress. The paper details that many freshwater species (e.g., invertebrates, certain fish, amphibians, and aquatic plants) exhibit reduced physiological performance at elevated sulfate concentrations.
+– Sensitivity to sulfate often depends on water chemistry; for instance, higher water hardness and the presence of chloride can mitigate some toxic effects, whereas soft water systems are more vulnerable.
+
+• Role of Sulfide:
+– The ecotoxicological concern is compounded by the fact that sulfate reduction yields hydrogen sulfide (H₂S), a compound known for its high toxicity to aquatic life.
+– Elevated levels of sulfide can affect respiration, growth, and reproduction across a range of organisms, thereby impacting community structure and ecosystem services.
+
+• Human Health Considerations:
+– The review also touches on potential implications for human health, particularly in relation to drinking water quality.
+– Many freshwater sources used for human consumption can be affected by sulfate levels, which in turn are regulated by environmental quality standards that consider both sulfate and its metabolites.
+
+5. Bioremediation Strategies
+• Mitigation Approaches:
+– The paper reviews a variety of bioremediation techniques aimed at reducing sulfate loads in contaminated water bodies.
+– Constructed wetlands, permeable reactive barriers, and bioreactors are evaluated, with reported removal efficiencies ranging from 0% to 70%.
+– While promising, these technologies are highly variable in performance due to factors such as hydraulic residence time, microbial community composition, and the specific chemical environment.
+
+• Research Gaps and Future Directions:
+– The authors emphasize that there is a pressing need for more field-scale studies to better understand the long-term trends and spatial dynamics of sulfate pollution.
+– They call for further research into the interactions between sulfate pollution, climate change, and land-use practices, as well as the development of more robust and scalable bioremediation systems.
+
+6. Conclusions
+• The review concludes that the global perturbation of the sulfur cycle—driven by both legacy pollution and ongoing anthropogenic activities—is likely to have widespread and long-lasting effects on freshwater ecosystems.
+• The interplay between sulfate and major biogeochemical cycles is complex, influencing greenhouse gas emissions, nutrient dynamics, and ecological health.
+• There is a critical need for integrative, interdisciplinary research to refine our understanding of these processes and to develop effective mitigation strategies that protect both ecosystem function and human health.
+
+This detailed synthesis provides a thorough overview suitable for researchers interested in the environmental chemistry, ecological impacts, and remediation of sulfate pollution in freshwater systems. For further details, please refer to the full article by Zak et al. (2020) in Earth-Science Reviews.
+
+### Sources and sinks for sulfur
+ Sources and Trends of Sulfate in Freshwaters
+• Natural versus Anthropogenic Inputs:
+– The review begins by distinguishing between natural sulfate sources—such as mineral weathering, volcanic emissions, sea spray aerosols, and the oxidation of naturally occurring sulphides—and anthropogenic sources.
+– Anthropogenic activities such as industrial emissions, acid mine drainage (AMD), wetland drainage, agricultural fertilization, and even historical practices (e.g., fertilization with sulfate-containing superphosphate) have substantially increased sulfate loads in many regions.
+– Despite significant reductions in atmospheric sulfur deposition in parts of North America and Europe (owing to improved emission controls), many freshwater bodies still show sulfate concentrations well above natural background levels.
+Sulphides are formed by both desulphuration and dissimilatory sulphate reduction leading to a higher degree of sediment sulphidization. The former can be quite significant in overall sedimentary hydrogen sulphide production, e.g. 5.1 - 53 % [@Dunnette1985].
+
+### Interactions between sulfur cycling and eutrophication.
+(Due to eutrophication, i.e. a primarily enhanced P supply, the P-binding capacity of a sediment will be exceeded leading to a higher P mobility and less or no vivianite formation. A higher productivity leads to a higher OM supply toward the sediment which has consequences for the formation of vivianite. First, there is a higher demand for oxidants leading to a deterioration of redox conditions and higher reduction rates of ferric Fe and SO24 (Holmer & Storkholm, 2001). Second, there is more S2– produced because OM is specifically enriched in S compared to Fe (Redfield ratio: C106N16P1S0.7Fe0.05, [Stumm1981]).  Moreover, eutrophication is often accompanied by considerable inputs of SO24 leading to its higher availability and high rates of its consumption [@Holmer2001; @Zak2006]. Third, the OM itself can react with Fe forming a metal organic complex [@Lalonde2012]. The higher the sedimentary S:Fe ratio, the less reactive Fe seems to be available reducing the potential of vivianite to form (Fig. 3.5) because more Fe is bound in sulphidic form. Thus, under eutrophic conditions there is a negative feedback evolving through the enhanced supply of OM lowering the sedimentary P retention capacity due to less vivianite. Aquatic systems naturally high in reactive Fe may compensate better for a eutrophication induced decrease in P retention than systems low in Fe. This implies, that an artificial supply of Fe to systems with a high level in OM, P and SO24 can be used as a successful measure of lake restoration leading to increased P retention through vivianite formation (@Kleeberg2013; @Rothe2014). To ensure a lasting effect on P burial, Fe has to be supplied in surplus compensating for the losses through FeSx formation (Kleeberg et al., 2013) and the reaction with OM (@Lalonde2012). At which magnitude vivianite finally forms in different types of sediments depends on multiple factors and remains to be further investigated. The formation of the mineral is also controlled by the availability of OM rich in P, the concomittant liberation of Fe2+ and PO34 into the pore voids of the sediment, the activity of microorganisms and resorption of PO34 onto the surface of remaining iron(oxyhydr)oxides.) Rothe 2015
+
+
+## Vivianite in the sediment
+Start at the beginning, vivianite characteristics.
+basically summarize @Rothe2016
+Next, the formation requirments and kinetics [@Paskin2024]
+Then, the stability under oxygen conditions
+And then the part about the sulfidation
+
+\begin{equation}
+  \mathrm{Fe_3(PO_{4})_2\bullet H_2O(s) + 2H^+} \rightleftharpoons \mathrm{3Fe^{2+} + 2HPO_4^{2-} + 8H_2O}
+  (\#eq:vivianitedissolve)
+\end{equation}
+
+\begin{equation}
+  \mathrm{Fe^{2+} + xHS^-} \rightleftharpoons \mathrm{FeS_x(s) + xH^+}
+  (\#eq:sulfideform)
+\end{equation}
+
+
+## Research objectives and outline
+The research presented in this dissertation was done as part of the EU Horizon 2020 Marie Curie Innovative training network "RecaP". The goal of the RecaP project is to better understand the impact and changes needed to reach a sustainable use of P. The research here focuses on the cycling of P in freshwater systems, which needs to be understood in order to improve water quality. Specifically, the sulfide-induced mobilization of P from vivianite is investigated in lake sediments. The background and state of the knowledge is outlined in chapter 1. Although it has been shown that vivianite reacts with sulfide under laboratory conditions, the process has not been studied directly in natural lake sediment. The dissertation aims to answer the following research questions:
+
+* Can sulfide produced by microbial sulfate reduction mobilize P from vivianite in lake sediment?
+* What is the potential relevance of vivianite destabilization for sediment P retention capacity?
+
+The process is studied in different contexts relevant for restoration of eutrophic lakes: In chapter 2, the stability of vivianite and other Fe-bound P forms is assessed after treating the sediment with Fe, to demonstrate the limits of Fe amendment as restoration technique. Chapter 3 addresses the relevance of legacy P bound in vivianite as possible source of P, and in chapter 4 this is further investigated under natural conditions. 
+Chapter 5 summarizes the outcomes of the other chapters and places the findings in a broader context.

@@ -1,0 +1,15 @@
+book_filename: "my-thesis"   # <-- Final PDF name: "my-thesis.pdf"
+output_dir: "_book"          # <-- Put final files in the _book/ folder
+delete_merged_file: true     # optional: delete the merged .md
+language:
+ ui:
+  chapter_name: "Chapter"
+rmd_files:
+  - index.Rmd
+  - 01-introduction.Rmd
+  - 02-Paper1.Rmd
+  - 03-paper2.Rmd
+  - 04-paper3.Rmd
+  - 05-synthesis.Rmd
+  # ...
+  - 99-Apendices.Rmd  # optional, if you keep references in a separate .Rmd
