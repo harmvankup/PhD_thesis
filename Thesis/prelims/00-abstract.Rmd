@@ -1,3 +1,0 @@
-This is the document  \par
-
-Second paragraph of abstract starts here.

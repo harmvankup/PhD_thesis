@@ -73,6 +73,7 @@
 % ------------------------------------------------
 \makeatletter
 \newcommand{\degree}[1]{\def\@degree{#1}}
+\newcommand{\currentdegree}[1]{\def\@currentdegree{#1}}
 \newcommand{\institution}[1]{\def\@institution{#1}}
 \newcommand{\division}[1]{\def\@division{#1}}
 \newcommand{\department}[1]{\def\@department{#1}}
@@ -92,10 +93,11 @@
 
 % Pandoc will pass these from YAML front matter if present
   \degree{Doktors der Naturwissenschaften (Dr.~rer. nat.)}
+  \currentdegree{M.Sc. in Earth Sciences}
   \institution{der Brandenburgischen Technischen Universität Cottbus-Senftenberg}
   \division{Von der Fakultät für Umwelt und Naturwissenschaften}
   \advisor{M Hupfer}
-  \department{Leibniz-Institut für Gewässerökologie und Binnenfischerei}
+  \department{Zeist, Köningreich der Niederlande}
   \startquote{\emph{Planet Earth is blue}\\
 \emph{and there's nothing we can do}\\
 \textbf{David Bowie}}
@@ -152,18 +154,31 @@
     \centering
     \vspace*{2cm}
     {\Large \textbf{\@title}\par}
-    \vspace{1cm}
+    \vspace{2cm}
     {\large \@division \\
     \@institution \\
-    for the degree of \\
+    zur Erlangung des akademischen Grades eines \\
     \@degree \\}
-    \vspace{2cm}
-    {\large \@author \\
-    \@department\par}
     \vspace{1.5cm}
-    Advisor: \@advisor \\
-        \vfill
-    {\large \@date}
+    {\large
+    genehmigte Dissertation \\}
+    \vspace{0.5cm}
+    {\large
+    vorgelegt von \\}
+    \vspace{1.5cm}
+    {\large \@currentdegree \\}
+    \vspace{1cm}
+    {\large 
+    \@author \\ }
+    \vspace{1cm} 
+    {\large 
+    aus \@department\par}
+    \vfill
+    \begin{flushleft}
+    {\large Gutachter: \@advisor \\}
+        
+    {\large Tag der mündlichen Prüfung: \@date}
+    \end{flushleft}
   \end{titlepage}
   \cleardoublepage
 
@@ -726,7 +741,7 @@ You will probably find the resources at \url{https://www.lecb.ncifcrf.gov/~toms/
 \section*{Abstract}\label{abstract}
 \addcontentsline{toc}{section}{Abstract}
 
-\noindent \textbf{Purpose}: Eutrophication of freshwater systems is primarily driven by excessive nutrient inputs, particularly phosphorus (P). While external nutrient control has been emphasized, the prediction and management of internal P loading from sedimentary sources remain complex. This study examines the role of vivianite (Fe(II)3(PO4)2·8H2O), a P-bearing mineral in anoxic sediments, in contributing to internal P release under sulfidic conditions.
+\noindent \textbf{Purpose}: Eutrophication of freshwater systems is primarily driven by excessive nutrient inputs, particularly phosphorus (P). While external nutrient control has been emphasized, the prediction and management of internal P loading from sedimentary sources remain complex. This study examines the role of vivianite (Fe(II)\emph{3}(PO\_4\_)\emph{2}·8H\_2\_O), a P-bearing mineral in anoxic sediments, in contributing to internal P release under sulfidic conditions.
 
 \noindent \textbf{Materials and Methods}: A mesocosm experiment was conducted using sediment cores from Lake Arendsee, Germany. The cores were exposed to elevated sulfate concentrations to induce sulfate reduction, simulating anoxic and sulfidic conditions. Both water column chemistry and sediment solid-phase analyses were performed. P release from vivianite-rich sediments was monitored, along with changes in iron (Fe) mineral phases using sequential extraction and X-ray diffraction.
 
@@ -784,6 +799,12 @@ Thereafter, all tubes were sealed with custom-made airtight caps equipped with s
 At the end of the incubation period, the tubes were removed from the glove bag for subsequent processing. The caps were detached, and the final water samples were collected and subsampled before discarding the remaining water, leaving approximately 10 cm above the SWI. Despite air exposure after the removal of the caps and glove bag, the risk of oxygen affecting the sediment prior to slicing was minimal owing to the short duration of exposure compared to the time required for diffusive transport through the water column (hours versus days). The sediment was then sliced to determine the depth profiles of chemical composition and P speciation in the solid phase. To minimize oxygen exposure, sediment processing was conducted immediately and completed within 24 h. Additionally, the exposure was limited by storing the sediments in closed airtight containers, as oxidation can significantly alter P speciation in anoxic sediments \citep{Kraal2014}.
 The upper 3 cm of the cores were sliced at 0.5 cm intervals, followed by two slices at 1 cm intervals, while deeper layers were sliced at 2 cm intervals down to a depth of 10 cm. The slices were carefully collected and homogenized. Mixed sediment sections were created by pooling equal weights from triplicate slices. This mixed sediment was stored in closed containers at 4 °C overnight, and subsamples were taken the following day for sequential extractions, analysis of dry weight (DW), and loss on ignition (LOI). After subsampling, the mixed sediment was frozen at -20 °C, then freeze dried and ground using an agate mortar and pestle. The dry, powdered sediments were stored in the dark at room temperature and later analysed for elemental and mineralogical composition.
 
+\begin{figure}
+\centering
+\includegraphics{my-thesis_files/figure-latex/IncubationComposition-1.pdf}
+\caption{\label{fig:IncubationComposition}Elemental composition profiles of the sediment solid phase of selected elements. The composition of the initial sediment is represented as vertical lines, dotted for deep vivianite-rich sediment and dashed for the upper organic-rich sediment. The last panel shows the proportion of the vivianite-rich sediment in the treatment with both sediment types, where 1 indicates 100\% vivianite-rich sediment, while 0 represents 100\% OM-rich sediment. Inert elements (aluminium (Al) and Titanium (Ti)), as well Fe and Manganese (Mn) concentrations after incubation were compared to the starting sediment concentrations to determine the sediment type. At the start of the experiment, 2 cm of organic-rich sediment was stacked on top of vivianite-rich sediment. After incubation this was still apparent, while the half centimetre slice between 2.0--2.5 cm depth features a mix of approximately 60\%/40\% vivianite-rich/OM-rich sediment.}
+\end{figure}
+
 \subsection{Chemical analysis}\label{chemical-analysis}
 
 \subsubsection{Solid phase analysis}\label{solid-phase-analysis}
@@ -793,16 +814,70 @@ To qualitatively assess the mineral composition and identify the presence of viv
 
 \subsubsection{Phosphorus Sequential Extraction}\label{phosphorus-sequential-extraction}
 
-The P and Fe species in the sediment were determined using a sequential extraction protocol, which was originally developed by Psenner et al.~(1984) and later modified by Wang et al.~(2021) for vivianite extraction \citep{Psenner1984, Wang2021}. A precisely weighed 0.6 g of wet sediment was placed into 15 mL centrifuge tubes. The extraction process consisted of five steps (Table 1). Extracts were filtered, acidified, and analysed for P using the molybdenum blue method \citep{Murphy1962}. For the NaOH fraction, extracts were analysed both before and after digestion with K\textsubscript{2}S\textsubscript{2}O\textsubscript{8} to differentiate soluble reactive phosphorus (NaOH-SRP) from nonreactive phosphorus (NaOH-NRP). Specific fractions were designated for Fe analysis (BD-Fe and Bipy-Fe) using Atomic Absorption Spectroscopy (AAS; pinAAcle9001; PerkinElmer, Waltham, MA, USA).
+The P and Fe species in the sediment were determined using a sequential extraction protocol, which was originally developed by Psenner et al.~(1984) and later modified by Wang et al.~(2021) for vivianite extraction \citep{Psenner1984, Wang2021}. A precisely weighed 0.6 g of wet sediment was placed into 15 mL centrifuge tubes. The extraction process consisted of five steps (Table \ref{tab:IncubationSeqTable}). Extracts were filtered, acidified, and analysed for P using the molybdenum blue method \citep{Murphy1962}. For the NaOH fraction, extracts were analysed both before and after digestion with K\textsubscript{2}S\textsubscript{2}O\textsubscript{8} to differentiate soluble reactive phosphorus (NaOH-SRP) from nonreactive phosphorus (NaOH-NRP). Specific fractions were designated for Fe analysis (BD-Fe and Bipy-Fe) using Atomic Absorption Spectroscopy (AAS; pinAAcle9001; PerkinElmer, Waltham, MA, USA).
+
+\begin{table}
+\centering
+\caption{\label{tab:IncubationSeqTable}Sequential extraction steps used in the experiment, based on the protocol of Wang et al. (2021).}
+\centering
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
+\begin{tabular}[t]{llll}
+\toprule
+Step & Extractant & P fraction & Target P species\\
+\midrule
+1 & Deoxygenated MQ H₂O & H₂O-P & Labile P, porewater P\\
+2 & 0.2\% 2,2′-bipyridine + 0.1 M KCl & Bipy-P & Vivianite-P, Fe(II)-bound P\\
+3 & 0.111 M Na₂S₂O₄/0.11 M NaHCO₃ & BD-P & Reducible Fe–P species\\
+4a & 0.1 M NaOH & NaOH-SRP & P bound to metals\\
+4b &  & NaOH-NRP & Biogenic P, difference between TP and SRP\\
+\addlinespace
+5 & 0.5 M HCl & HCl-P & Calcium bound P\\
+6 & Aqua regia digestion & TP & Total P\\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 \subsubsection{Dissolved elemental analysis}\label{dissolved-elemental-analysis}
 
-Surface water samples were subdivided into three parts post-filtration (0.22 µm, 0.45 µm cellulose acetate). A 10 mL subsample was preserved with hydrochloric acid for P concentration analysis using the molybdate blue method (Murphy and Riley 1962). Sulfide concentrations in 2 mL subsamples were fixed with a 2\% zinc acetate solution (200 µL) and measured photometrically using the methylene blue method (Cline 1969). Sulfate concentrations were determined photometrically after filtering through a 0.22 µm cellulose acetate filter, using the BaSO4 colloid method \citep{Tabatabai1974}. Additionally, the elemental content (Fe, P, S, Mn, Ca, Al, and Ti) of the digested sediment was quantified using inductively coupled plasma optical emission spectroscopy (ICP-OES, iCAP 7000 series, Thermo Scientific).
+Surface water samples were subdivided into three parts post-filtration (0.22 µm, 0.45 µm cellulose acetate). A 10 mL subsample was preserved with hydrochloric acid for P concentration analysis using the molybdate blue method \citep{Murphy1962}. Sulfide concentrations in 2 mL subsamples were fixed with a 2\% zinc acetate solution (200 µL) and measured photometrically using the methylene blue method \citep{Cline1969}. Sulfate concentrations were determined photometrically after filtering through a 0.22 µm cellulose acetate filter, using the BaSO4 colloid method \citep{Tabatabai1974}. Additionally, the elemental content (Fe, P, S, Mn, Ca, Al, and Ti) of the digested sediment was quantified using inductively coupled plasma optical emission spectroscopy (ICP-OES, iCAP 7000 series, Thermo Scientific).
 
 \subsection{Data processing and statistical analysis}\label{data-processing-and-statistical-analysis}
 
 Data analysis was conducted using R, and the detailed calculations are provided in the Supplementary Material. The release of P, sulfate, and sulfide from the sediment was determined by summing the changes in water column content at each time step, including any added sulfate stock. The variations in sediment composition were assessed by estimating the initial composition based on measurements of starting sediment compositions. This study utilized two types of sediments (Viv. + OM), with the estimated starting composition for each sediment slice derived from the concentrations of unchanged elements (Al, Ti, Fe, and Mn). Concentrations per volume and per surface area, integrated over the measured depths, were calculated from per-dry weight values by estimating the sediment bulk density from dry weight and loss on ignition (LOI) values \citep{Avnimelech2001}.
 Per-surface area concentrations of dissolved species in the water column were also calculated to compare changes in the solid phase and water column, independent of variations in water column heights. The release rates were determined from concentration time series using the slope of the linear regression. Analysis of Variance (ANOVA) was employed to assess significant differences among the three treatments, followed by Tukey's honestly significant difference (HSD) test to identify the differences in specific treatment. The correlation between sulfate and sulfide concentrations in the water column was analysed using the Pearson correlation coefficient. The significant variations in sediment composition at all depths were tested using a paired t-test, with pairwise comparisons conducted at a 95\% family-wise confidence level.
+
+\section{Results}\label{results}
+
+\subsection{Sulphate, Sulphide and Phosphorus Dynamics in Overlying Water}\label{sulphate-sulphide-and-phosphorus-dynamics-in-overlying-water}
+
+All treatments demonstrated a notable reduction in sulphate, resulting in decreased sulphate concentrations compared to the initial and resupplied concentrations of 150 mg L\textsuperscript{−1} (Fig. \ref{fig:IncubationTimeseries}). After adjusting for added sulphate stock, the average sulphate reduction rates in treatments with OM sediment were 0.37 and 0.42 µmol cm\textsuperscript{−2} d\textsuperscript{−1}, respectively, both significantly different (p \textless{} 10\textsuperscript{−6}) from the rate of 0.11 µmol cm\textsuperscript{−2} d\textsuperscript{−1} in the treatment with only vivianite-rich sediments (Table 2). An increase in sulphide levels was observed in the water columns of the Viv. + OM and Qs + OM treatments, with sulphide accumulation correlating with the sulphate decrease (r = -0.73 and r = -0.85, respectively). In the Viv. + OM treatment, sulphide accumulation reached 10 ± 4 µmol cm−2 at the end of the experiment, significantly lower (p \textless{} 0.01) than in the treatment with Qs + OM (38 ± 12 µmol cm\textsuperscript{−2}). No sulphide accumulation was observed in the treatment with vivianite sediment alone (Fig. \ref{fig:IncubationTimeseries}).
+The release rate of P into the overlying water and the total accumulated SRP in the water column were significantly higher in the Viv + OM treatment, compared to other treatments (p \textless{} 10\textsuperscript{-6}) (Fig. 2). The initial days of the experiment exhibited fluctuations and a reduction in SRP concentrations as the sediment settled. Following this stabilisation period, SRP levels were lowest in the Viv. treatment sediment, maintaining levels below 10 µmol L\textsuperscript{-1} for most of the experiment. The Qs + OM treatment maintained a slightly higher baseline SRP concentration at approximately 50 µmol L\textsuperscript{-1}, with minimal SRP release from the sediment (0.0023 µmol cm\textsuperscript{−2} d\textsuperscript{−1}. In contrast, SRP levels in the Viv. + OM treatment continued to increase throughout the experiment, with a release rate of 0.035 µmol cm\textsuperscript{−2} d\textsuperscript{−1} (Table 2).
+
+\begin{verbatim}
+## Warning: Removed 4 rows containing missing values or values outside the scale range
+## (`geom_rect()`).
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{my-thesis_files/figure-latex/IncubationChange-1.pdf}
+\caption{\label{fig:IncubationChange}Theoretical unchanged concentrations of P and S in the sediment, calculated from the concentrations of the starting sediment, compared with the measured values. The difference is marked as either increase or decrease with respect to the initial composition. (b) The change in sediment P and S content. The surface of the graph represents the total change, and is shown in tables 2 and 3. Total phosphorus (TP) decreased slightly in the upper sediment of treatments with OM, and more significantly in treatment Viv. + OM just below the OM layer between 2 and 3 cm depth. Simultaneously, the S content increased drastically in the same zone.}
+\end{figure}
+
+\subsection{Relationship of iron, phosphorus and sulphur in solid sediments}\label{relationship-of-iron-phosphorus-and-sulphur-in-solid-sediments}
+
+The initial concentrations of total Fe, total phosphorus (TP), and total sulphur (TS) in the sediments before incubation were higher in the Viv-rich deep sediment compared to the OM-rich upper sediment. The treatments did not significantly affect the Fe concentrations in the sediments (p \textgreater{} 0.5), with low Fe concentrations observed in the upper 2 cm of treatments containing OM and high Fe concentrations in the Viv. treatment. Similar results were observed for manganese (Mn), aluminium (Al), and titanium (Ti) concentrations, which were used to calculate the proportions of Viv- and OM-type sediments, particularly at the transition between the two sediments in the Viv + OM treatment (Fig. \ref{fig:IncubationComposition}. Directly below this transition zone, at a depth of approximately 2--3 cm, the largest transformations in composition occurred, particularly in the P and S contents (Figs. \ref{fig:IncubationComposition} and \ref{fig:IncubationChange}). The TP content in the Viv + OM sediment displayed a significant decrease compared to the initial sediment composition (p \textless{} 0.05), resulting in an estimated mass loss of 14 µmol cm\textsuperscript{−2} of P after incubation, primarily from the first 3 cm of sediment (Fig. \ref{fig:IncubationChange}). In contrast, the TP concentration in the sediment treated with only Viv was not significantly different (p \textgreater{} 0.1) from the initial sediment composition (Fig. \ref{fig:IncubationChange}.
+
+\begin{figure}
+\centering
+\includegraphics{my-thesis_files/figure-latex/IncubationSeq-1.pdf}
+\caption{\label{fig:IncubationSeq}Depth profiles of phosphorus (P) fractionation from sequential extractions in three sediment treatment types, depicting the distribution of water-extractable P (H2O-P), 2,2-bipyridine extractable P (Bipy-P), bicarbonate-dithionite extractable P (BD-P), NaOH-extractable soluble reactive P (SRP) and non-reactive P (NRP), HCl extractable P (HCl-P) and total P minus all extracted P (recalcitrant P). (b) Iron over P molar ratio within the sediment total fraction measured by ICP-OES after digestion, and the sequentially extracted Bipyridine and BD fractions. Low Fe/P is indicative for P binding in vivianite and other Fe phases, while high Fe/P suggests low Fe/P binding.}
+\end{figure}
+
+At the same sediment depth in the Viv + OM treatment where the P content decreased most significantly, the TS content showed a strong increase, peaking at a depth of 2--2.5 cm with a total mass increase of 46 µmol \textsuperscript{−2} S (Table 2). The TS content in the control treatments (Viv and Qs + OM) remained unchanged (p \textless{} 0.05) compared to that of the respective starting sediments (Fig. \ref{fig:IncubationChange}).
+In addition to significant differences in TP content, the initial sediments exhibited distinct P species, as identified through sequential extractions. Specifically, in the vivianite-rich sediment, the BD-P and NaOH-SRP fractions constituted the largest pools, representing the majority of bound P. Conversely, these fractions, which include Fe-bound P, were the smallest in the OM-rich sediment.
+The results of the sequential extractions indicated that after incubation, P speciation in the sediments shifted relative to the initial conditions, depending on the treatment and depth. Across all treatments, the uppermost sediment layers were affected; recalcitrant P pools decreased, whereas NaOH-NRP pools slightly increased. In the Viv. + OM treatment, a notable decline in Fe-bound P was observed, with the most significant reductions in the BD-P and NaOH-SRP pools, and the largest relative decrease occurring in NaOH-SRP (Fig. \ref{fig:IncubationSeq}).
+XRD analysis of the two initial sediments revealed a characteristic reflection pattern for vivianite in the deeper sediment, absent in the upper sediment (Fig. 6). Post-incubation XRD analysis exhibited a relative reduction in the characteristic peak area in the sediment from the Viv + OM treatment above a depth of 3 cm, with no vivianite detected above a depth of 2.5 cm.
 
 \chapter{Paper 3}\label{paper3}
 

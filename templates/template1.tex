@@ -52,6 +52,7 @@ $endif$
 % ------------------------------------------------
 \makeatletter
 \newcommand{\degree}[1]{\def\@degree{#1}}
+\newcommand{\currentdegree}[1]{\def\@currentdegree{#1}}
 \newcommand{\institution}[1]{\def\@institution{#1}}
 \newcommand{\division}[1]{\def\@division{#1}}
 \newcommand{\department}[1]{\def\@department{#1}}
@@ -72,6 +73,9 @@ $endif$
 % Pandoc will pass these from YAML front matter if present
 $if(degree)$
   \degree{$degree$}
+$endif$
+$if(currentdegree)$
+  \currentdegree{$currentdegree$}
 $endif$
 $if(institution)$
   \institution{$institution$}
@@ -157,21 +161,34 @@ $if(title)$
     \centering
     \vspace*{2cm}
     {\Large \textbf{\@title}\par}
-    \vspace{1cm}
+    \vspace{2cm}
     {\large \@division \\
     \@institution \\
-    for the degree of \\
+    zur Erlangung des akademischen Grades eines \\
     \@degree \\}
-    \vspace{2cm}
-    {\large \@author \\
-    \@department\par}
     \vspace{1.5cm}
-    Advisor: \@advisor \\
-    $if(altadvisor)$
-      Co-Advisor: \@altadvisor
-    $endif$
+    {\large
+    genehmigte Dissertation \\}
+    \vspace{0.5cm}
+    {\large
+    vorgelegt von \\}
+    \vspace{1.5cm}
+    {\large \@currentdegree \\}
+    \vspace{1cm}
+    {\large 
+    \@author \\ }
+    \vspace{1cm} 
+    {\large 
+    aus \@department\par}
     \vfill
-    {\large \@date}
+    \begin{flushleft}
+    {\large Gutachter: \@advisor \\}
+    $if(altadvisor)$
+     {\large Gutachter: \@altadvisor \\}
+    $endif$
+    
+    {\large Tag der mündlichen Prüfung: \@date}
+    \end{flushleft}
   \end{titlepage}
   \cleardoublepage
 $endif$

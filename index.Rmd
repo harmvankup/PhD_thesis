@@ -9,8 +9,9 @@ advisor: 'M Hupfer'
 startquote: |
   `r if(knitr:::is_latex_output()) paste(readLines(here::here( "prelims", "00-quote.Rmd")), collapse = "\n  ")`
 #altadvisor: 'Your Other Advisor'
-department: 'Leibniz-Institut für Gewässerökologie und Binnenfischerei'
+department: 'Zeist, Köningreich der Niederlande'
 degree: 'Doktors der Naturwissenschaften (Dr. rer. nat.)'
+currentdegree: 'M.Sc. in Earth Sciences'
 site: bookdown::bookdown_site
 # The next two lines allow you to change the spacing in your thesis. You can 
 # switch out \onehalfspacing with \singlespacing or \doublespacing, if desired.
@@ -76,6 +77,7 @@ if(!require(remotes)) {
 if(!require(thesisdown)) {if (params$`Install needed packages for {thesisdown}`) {
     remotes::install_github("ismayc/thesisdown")} else {stop(paste("You need to run",'remotes::install_github("ismayc/thesisdown")', "first in the Console."))}}
 library(thesisdown)
+library(kableExtra)
 source("scripts/packages.R")
 source("scripts/general.R")
 #Set how wide the R output will go
